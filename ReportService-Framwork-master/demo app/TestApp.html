@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Demo web</title>
+    <link rel="stylesheet" href="bootstrap.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <br>
+        <div class="card">
+            <div class="card-header bg-success">
+                Custom Input
+            </div>
+            <div class="card-body">
+
+                <form id="myForm">
+                    <div class="form-group">
+                        <label for="aid">Your app id</label>
+                        <input class="form-control" type="number" name="aid" id="msg">
+                    </div>
+                    <div class="form-group">
+                        <label for="message">Message</label>
+                        <input class="form-control" type="text" name="message" id="msg">
+                    </div>
+                    <div class="form-group">
+                        <label for="reportBy">Report By</label>
+                        <input class="form-control" type="text" name="reportBy" id="msg">
+                    </div>
+                    <div class="form-group">
+                        <label for="logType">Log Type</label>
+                        <select name="logType" class="custom-select">
+                            <option value="Verbose" selected>Verbose</option>
+                            <option value="Info">Info</option>
+                            <option value="Warning">Warning</option>
+                            <option value="Error">Error</option>
+                        </select>
+                    </div>
+                </form>
+                <button " class=" btn btn-primary" onclick="logMessage()">Test</button>
+                <br />
+                <span style="color: green; font-size: 0.8em;" id="res-msg"></span>
+                <span style="color: red; font-size: 0.8em;" id="err-msg"></span>
+            </div>
+            <div class="card-footer">
+                <span class="text-muted text-small">For testing purpose only</span>
+            </div>
+        </div>
+
+        <br/>
+        <div class="card">
+            <div class="card-header bg-danger">
+                Some error
+            </div>
+            <div class="card-body">
+                <button class="btn btn-danger" onclick="divisionByZero()">
+                    Division by zero
+                </button>
+                <br/>
+                <br/>
+                <button class="btn btn-danger" onclick="undefinedError()">
+                    Undefined
+                </button>
+            </div>
+        </div>
+    </div>
+</body>
+<script src="../reportFramework.js"></script>
+<script>
+    var logger = new Logger(2, "Logger");
+    function logMessage() {
+        var { aid, message, logType, reportBy } = Object.fromEntries(new FormData((document.querySelector("#myForm"))));
+        var manualLogger = new Logger(aid, reportBy);
+        manualLogger.log(message, logType).then(data => document.getElementById('res-msg').innerText = data.msg).catch((err) => {
+            console.error(err);
+            if(typeof(err.msg) == 'string')
+                document.getElementById('err-msg').innerText = err.msg;
+            else
+                document.getElementById('err-msg').innerText = "Failed";
+        });
+
+    }
+    function divisionByZero(){
+        try {
+            var a = 24/0
+            throw new Error("Division by zero error");
+        } catch (error) {
+            console.log(error);
+            logger.log(error, "Error");
+        }
+    }
+    function undefinedError(){
+        try {
+            let a = undefined;
+            let b = a.someKey;
+        } catch (error) {
+            console.log(error)
+            logger.log(error, "Error")
+        }
+    }
+</script>
+
+</html>
