@@ -16,7 +16,7 @@
     "report",
     "error"
   ],
-  "author": "Pranay Gupta",
+  "author": "Ronak patil",
   "license": "ISC",
   "dependencies": {
     "@types/express": "^4.17.1",
